@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
+import { hasPermission } from "@/lib/db/queries-rbac";
 import { runFullAnalysis } from "@/lib/kayip-kacak/run-analysis";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
     return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
+  }
+  if (!(await hasPermission(session.user.role, "analiz_calistir"))) {
+    return NextResponse.json({ error: "Bu işlem için yetkiniz yok" }, { status: 403 });
   }
   const body = await req.json();
   const year = Number(body.year) || new Date().getFullYear();

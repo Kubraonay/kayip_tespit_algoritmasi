@@ -91,7 +91,7 @@ export function AboneMapPanel({
               Abone Haritası
             </CardTitle>
             <p className="mt-1 text-sm text-slate-700">
-              Kırmızı işaretler: kaçak tespiti yapılan aboneler — tıklayın
+              Kırmızı işaretler: kaçak tespiti yapılan aboneler
             </p>
           </div>
           <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-medium">

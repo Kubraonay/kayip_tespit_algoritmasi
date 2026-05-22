@@ -12,7 +12,26 @@ import {
 } from "@/lib/db/schema";
 import { z } from "zod";
 import { auth } from "@/lib/auth/config";
+import { hasPermission } from "@/lib/db/queries-rbac";
 import { kayitIslemLog } from "@/lib/audit/log";
+
+async function requireVeriDuzenleme() {
+  const session = await auth();
+  if (!session?.user) return { error: "Oturum gerekli" as const };
+  if (!(await hasPermission(session.user.role, "veri_duzenleme"))) {
+    return { error: "Veri düzenleme yetkisi gerekli" as const };
+  }
+  return { session };
+}
+
+async function requireVeriAktar() {
+  const session = await auth();
+  if (!session?.user) return { error: "Oturum gerekli" as const };
+  if (!(await hasPermission(session.user.role, "veri_aktar"))) {
+    return { error: "Veri aktarım yetkisi gerekli" as const };
+  }
+  return { session };
+}
 
 async function logAction(
   islemTipi: string,
@@ -35,6 +54,8 @@ async function logAction(
 }
 
 export async function createAbone(formData: FormData) {
+  const check = await requireVeriDuzenleme();
+  if ("error" in check) return { error: check.error };
   const db = getDb();
   await db.insert(aboneler).values({
     aboneNo: formData.get("aboneNo") as string,
@@ -59,6 +80,8 @@ export async function createAbone(formData: FormData) {
 }
 
 export async function createTuketim(formData: FormData) {
+  const check = await requireVeriDuzenleme();
+  if ("error" in check) return { error: check.error };
   const db = getDb();
   const sayacId = Number(formData.get("sayacId"));
   const yil = Number(formData.get("yil"));
@@ -100,6 +123,8 @@ export async function createTuketim(formData: FormData) {
 }
 
 export async function createTrafo(formData: FormData) {
+  const check = await requireVeriDuzenleme();
+  if ("error" in check) return { error: check.error };
   const db = getDb();
   const kod = formData.get("kod") as string;
   const [trafo] = await db
@@ -123,6 +148,8 @@ export async function createTrafo(formData: FormData) {
 }
 
 export async function createFider(formData: FormData) {
+  const check = await requireVeriDuzenleme();
+  if ("error" in check) return { error: check.error };
   const db = getDb();
   const trafoId = Number(formData.get("trafoId"));
   const fider = await db
@@ -149,6 +176,8 @@ export async function createFider(formData: FormData) {
 }
 
 export async function createSayac(formData: FormData) {
+  const check = await requireVeriDuzenleme();
+  if ("error" in check) return { error: check.error };
   const db = getDb();
   await db.insert(sayaclar).values({
     seriNo: formData.get("seriNo") as string,
@@ -172,6 +201,10 @@ const importAboneRow = z.object({
 });
 
 export async function importAboneler(rows: Record<string, string>[]) {
+  const check = await requireVeriAktar();
+  if ("error" in check) {
+    return { error: check.error, basarili: 0, hatalar: [check.error] as string[] };
+  }
   const db = getDb();
   const trafolar = await db.select().from(trafoMerkezleri);
   const fiderList = await db.select().from(fiderler);
@@ -229,6 +262,10 @@ export async function importAboneler(rows: Record<string, string>[]) {
 }
 
 export async function importTuketim(rows: Record<string, string>[]) {
+  const check = await requireVeriAktar();
+  if ("error" in check) {
+    return { error: check.error, basarili: 0, hatalar: [check.error] as string[] };
+  }
   const db = getDb();
   const allSayaclar = await db.select().from(sayaclar);
   let basarili = 0;

@@ -37,6 +37,9 @@ yarn-error.log*
 # sqlite
 /data/
 
+# saha uploads
+/data/uploads/
+
 # vercel
 .vercel
 

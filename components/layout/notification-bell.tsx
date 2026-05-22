@@ -77,34 +77,34 @@ export function NotificationBell() {
           className="fixed right-6 top-6 z-[9999] w-full max-w-sm shadow-2xl"
           role="alert"
         >
-          <button
-            type="button"
-            onClick={() => handleClick(toast)}
-            className="flex w-full gap-3 rounded-xl border border-red-200 bg-white p-4 text-left shadow-lg transition-shadow hover:shadow-xl"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
-              <ShieldAlert className="h-5 w-5 text-red-600" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-red-900">
-                Yeni kaçak tespiti
-              </p>
-              <p className="mt-0.5 truncate text-sm text-slate-700">
-                {toast.aboneNo} — {toast.adSoyad}
-              </p>
-              <p className="mt-1 text-xs text-slate-700">{toast.tip}</p>
-            </div>
+          <div className="flex w-full items-start gap-2 rounded-xl border border-red-200 bg-white p-4 shadow-lg">
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setToast(null);
-              }}
-              className="text-slate-700 hover:text-slate-900"
+              onClick={() => handleClick(toast)}
+              className="flex min-w-0 flex-1 gap-3 text-left transition-shadow hover:opacity-90"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+                <ShieldAlert className="h-5 w-5 text-red-600" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-red-900">
+                  Yeni kaçak tespiti
+                </p>
+                <p className="mt-0.5 truncate text-sm text-slate-700">
+                  {toast.aboneNo} — {toast.adSoyad}
+                </p>
+                <p className="mt-1 text-xs text-slate-700">{toast.tip}</p>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setToast(null)}
+              className="shrink-0 rounded p-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+              aria-label="Bildirimi kapat"
             >
               <X className="h-4 w-4" />
             </button>
-          </button>
+          </div>
         </div>
       )}
 

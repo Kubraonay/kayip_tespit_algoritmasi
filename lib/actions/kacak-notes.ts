@@ -10,7 +10,7 @@ import {
   aboneler,
   users,
 } from "@/lib/db/schema";
-import { hasPermission } from "@/lib/auth/permissions";
+import { hasPermission } from "@/lib/db/queries-rbac";
 import { kayitIslemLog } from "@/lib/audit/log";
 import { z } from "zod";
 
@@ -19,7 +19,7 @@ async function requireSession() {
   if (!session?.user?.id) {
     return { error: "Oturum gerekli" as const };
   }
-  if (!hasPermission(session.user.role, "veri_duzenleme")) {
+  if (!(await hasPermission(session.user.role, "veri_duzenleme"))) {
     return { error: "Not ekleme yetkiniz yok" as const };
   }
   return { session };

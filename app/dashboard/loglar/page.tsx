@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth/config";
+import { redirect } from "next/navigation";
+import { hasPermission } from "@/lib/db/queries-rbac";
 import { getIslemLoglari } from "@/lib/db/queries-logs";
 import { ISLEM_TIPI_LABELS } from "@/lib/db/schema";
 import { paginate } from "@/lib/utils";
@@ -26,6 +28,10 @@ export default async function LoglarPage({
 }: {
   searchParams: Promise<{ page?: string; tip?: string }>;
 }) {
+  const session = await auth();
+  if (!(await hasPermission(session?.user?.role, "log_goruntuleme"))) {
+    redirect("/dashboard/yetkisiz?from=/dashboard/loglar");
+  }
   const sp = await searchParams;
   const page = Number(sp.page) || 1;
   const tipFilter = sp.tip || undefined;
@@ -42,7 +48,6 @@ export default async function LoglarPage({
     PAGE_SIZE
   );
 
-  const session = await auth();
   const tipCounts = all.reduce(
     (acc, l) => {
       acc[l.islemTipi] = (acc[l.islemTipi] ?? 0) + 1;

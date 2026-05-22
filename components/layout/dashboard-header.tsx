@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { NotificationBell } from "@/components/layout/notification-bell";
+import { AlarmNotificationCenter } from "@/components/alarmlar/alarm-notification-center";
 import { UserCircle } from "lucide-react";
 import { ROL_LABELS, type UserRole } from "@/lib/auth/permissions";
 
@@ -23,7 +23,7 @@ export function DashboardHeader({
         Kayıp Kaçak Tespit Platformu
       </h1>
       <div className="flex items-center gap-4">
-        <NotificationBell />
+        <AlarmNotificationCenter />
         <Link
           href="/dashboard/profil"
           className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm transition-colors hover:bg-slate-50"

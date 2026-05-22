@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   KACAK_TIPI_LABELS,
+  ISPAT_TIPI_LABELS,
   type KacakTespiti,
   type Abone,
   type IspatKaydi,
@@ -12,8 +13,10 @@ import { KacakHourlyChart } from "@/components/kacak/kacak-hourly-chart";
 import { getAboneHourly } from "@/lib/db/queries-extended";
 import { getKacakNotlari } from "@/lib/actions/kacak-notes";
 import { KacakNotesSection } from "@/components/kacak/kacak-notes-section";
+import { CreateGorevButton } from "@/components/saha/create-gorev-button";
 import { auth } from "@/lib/auth/config";
-import { hasPermission } from "@/lib/auth/permissions";
+import { hasPermission } from "@/lib/db/queries-rbac";
+import { getSahaEkipleri, getSahaPersonelleri, getGorevByKacakId } from "@/lib/db/queries-saha";
 import { FileCheck, Calculator, Activity, Scale } from "lucide-react";
 
 const ispatIcon = {
@@ -43,7 +46,25 @@ export async function KacakDetailPanel({
   const hourly = await getAboneHourly(abone.id, year, month);
   const notes = await getKacakNotlari(kacak.id);
   const session = await auth();
-  const canEdit = hasPermission(session?.user?.role, "veri_duzenleme");
+  const canEdit = await hasPermission(session?.user?.role, "veri_duzenleme");
+  const canSaha = await hasPermission(session?.user?.role, "saha_yonetimi");
+  const [ekiplerRows, personellerRows, existingGorev] = canSaha
+    ? await Promise.all([
+        getSahaEkipleri(),
+        getSahaPersonelleri(),
+        getGorevByKacakId(kacak.id),
+      ])
+    : [[], [], null];
+  const ekipler = ekiplerRows.map((e) => ({
+    id: e.ekip.id,
+    kod: e.ekip.kod,
+    ad: e.ekip.ad,
+  }));
+  const personeller = personellerRows.map((p) => ({
+    id: p.personel.id,
+    adSoyad: p.personel.adSoyad,
+    ekipId: p.personel.ekipId,
+  }));
 
   return (
     <div className="space-y-4">
@@ -92,11 +113,21 @@ export async function KacakDetailPanel({
           <p className="text-xs text-slate-700">
             {trafoKod} / {fiderKod} · Dönem {kacak.donem}
           </p>
-          <Link href={`/dashboard/aboneler/${abone.id}`}>
-            <Button variant="outline" size="sm">
-              Abone kartına git
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href={`/dashboard/aboneler/${abone.id}`}>
+              <Button variant="outline" size="sm">
+                Abone kartına git
+              </Button>
+            </Link>
+            {canSaha && ekipler.length > 0 && (
+              <CreateGorevButton
+                kacakTespitId={kacak.id}
+                ekipler={ekipler}
+                personeller={personeller}
+                existingGorevId={existingGorev?.id}
+              />
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -120,8 +151,8 @@ export async function KacakDetailPanel({
                     <Icon className="h-4 w-4 text-sky-600" />
                   </div>
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-wide text-slate-700">
-                      {isp.tip}
+                    <p className="text-xs font-medium tracking-wide text-slate-700">
+                      {ISPAT_TIPI_LABELS[isp.tip] ?? isp.tip}
                     </p>
                     <p className="text-sm font-medium text-slate-800">
                       {isp.baslik}

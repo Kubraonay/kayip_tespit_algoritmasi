@@ -70,6 +70,10 @@ E_trafo_kayıp = ΔP × T  (kWh)
 - Elektrik Piyasası Dengeleme ve Uzlaştırma Yönetmeliği
 - Yüksek Kayıplı Şirketlere İlişkin Usul ve Esaslar (Resmi Gazete)
 
-## 7. Uygulama Sınırı
+## 7. Saha operasyonları
 
-Bu yazılım mühendis karar destek aracıdır; resmi kaçak tespit tutanağı veya hukuki belge üretmez. OSOS/SCADA canlı entegrasyonu ayrı fazda planlanmalıdır.
+Kaçak tespit sonrası saha ekibine görev atanır; merkez panelden durum, konum ve dijital tutanak takip edilir. Saha personeli ayrı kullanıcı hesabı olmadan görev token linki ile sahada GPS, fotoğraf ve not iletebilir.
+
+## 8. Uygulama Sınırı
+
+Bu yazılım mühendis karar destek aracıdır; resmi kaçak tespit tutanağı veya hukuki belge üretmez (dijital tutanak taslak kayıttır). OSOS/SCADA canlı entegrasyonu ayrı fazda planlanmalıdır.

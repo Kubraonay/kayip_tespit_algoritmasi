@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import { normalizeUserRole } from "@/lib/auth/permissions";
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -9,7 +10,8 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as { role?: string }).role;
+        const rawRole = (user as { role?: string }).role;
+        token.role = normalizeUserRole(rawRole) ?? rawRole;
         token.id = user.id;
       }
       return token;
@@ -17,7 +19,9 @@ export const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        (session.user as { role?: string }).role = token.role as string;
+        const role = token.role as string | undefined;
+        (session.user as { role?: string }).role =
+          normalizeUserRole(role) ?? role;
       }
       return session;
     },
@@ -33,6 +37,9 @@ export const authConfig: NextAuthConfig = {
       }
       if (isAuthPage && isLoggedIn) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
+      }
+      if (path.startsWith("/saha/")) {
+        return true;
       }
       if (path.startsWith("/dashboard") && !isLoggedIn) {
         return false;

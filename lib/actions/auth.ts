@@ -35,7 +35,7 @@ export async function registerUser(formData: FormData) {
     email: parsed.data.email,
     passwordHash: hash,
     adSoyad: parsed.data.adSoyad,
-    rol: "muhendis",
+    rol: "operator",
   });
   return { success: true };
 }
