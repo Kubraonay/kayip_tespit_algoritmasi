@@ -1,10 +1,8 @@
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
-import { SidebarNav } from "@/components/layout/sidebar-nav";
-import { DashboardHeader } from "@/components/layout/dashboard-header";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { AlarmToastProvider } from "@/components/alarmlar/toast-provider";
-import { DashboardAccessWrapper } from "@/components/layout/dashboard-access-wrapper";
 import { getRolePermissions } from "@/lib/db/queries-rbac";
 import { normalizeUserRole } from "@/lib/auth/permissions";
 
@@ -23,22 +21,13 @@ export default async function DashboardLayout({
   return (
     <SessionProvider session={session}>
       <AlarmToastProvider>
-        <div className="flex min-h-screen bg-slate-50">
-          <SidebarNav
-            userName={session.user.name}
-            userRole={role}
-            permissions={permissions}
-          />
-          <main className="flex-1 overflow-auto">
-            <DashboardHeader
-              userName={session.user.name}
-              role={role}
-            />
-            <DashboardAccessWrapper permissions={permissions}>
-              <div className="p-8">{children}</div>
-            </DashboardAccessWrapper>
-          </main>
-        </div>
+        <DashboardShell
+          userName={session.user.name}
+          userRole={role}
+          permissions={permissions}
+        >
+          {children}
+        </DashboardShell>
       </AlarmToastProvider>
     </SessionProvider>
   );

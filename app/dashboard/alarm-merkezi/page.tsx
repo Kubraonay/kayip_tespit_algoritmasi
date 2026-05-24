@@ -45,12 +45,6 @@ export default async function AlarmMerkeziPage({
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/dashboard/bildirimler/canli"
-              className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium hover:bg-emerald-500"
-            >
-              Canlı Bildirimler
-            </Link>
-            <Link
               href="/dashboard/bildirimler/gecmis"
               className="inline-flex items-center gap-1 rounded-lg border border-slate-600 px-3 py-2 text-sm hover:bg-slate-700"
             >

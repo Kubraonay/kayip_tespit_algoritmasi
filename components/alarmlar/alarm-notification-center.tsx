@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, Radio } from "lucide-react";
+import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAlarmToast } from "@/components/alarmlar/toast-provider";
 import {
@@ -101,13 +101,6 @@ export function AlarmNotificationCenter() {
 
   return (
     <div className="relative flex items-center gap-2">
-      <Link
-        href="/dashboard/bildirimler/canli"
-        className="hidden items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-xs font-medium text-emerald-800 hover:bg-emerald-100 sm:flex"
-      >
-        <Radio className="h-3.5 w-3.5 animate-pulse" />
-        Canlı
-      </Link>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -127,7 +120,7 @@ export function AlarmNotificationCenter() {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-full z-50 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
             <div className="border-b border-slate-100 bg-slate-900 px-4 py-3 text-white">
-              <h3 className="font-semibold">Canlı Bildirimler</h3>
+              <h3 className="font-semibold">Alarmlar</h3>
               <div className="mt-2 flex gap-2 text-[10px]">
                 <span className="rounded bg-red-600 px-1.5 py-0.5">
                   {kpi.kritik} kritik

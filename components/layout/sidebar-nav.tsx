@@ -16,11 +16,11 @@ import {
   ScrollText,
   HardHat,
   BellRing,
-  Radio,
-  Shield,
   UserCog,
   KeyRound,
+  X,
 } from "lucide-react";
+import { HamburgerIcon } from "@/components/ui/hamburger-icon";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
@@ -45,7 +45,6 @@ const nav: NavItem[] = [
   { href: "/dashboard/kacak-tespit", label: "Kaçak Tespit", icon: BarChart3, permission: "kacak_goruntuleme" },
   { href: "/dashboard/saha-operasyonlari", label: "Saha Operasyonları", icon: HardHat, permission: "saha_goruntuleme" },
   { href: "/dashboard/alarm-merkezi", label: "Alarm Merkezi", icon: BellRing, permission: "alarm_goruntuleme" },
-  { href: "/dashboard/bildirimler/canli", label: "Canlı Bildirimler", icon: Radio, permission: "alarm_goruntuleme" },
   { href: "/dashboard/bilgilendirme", label: "Bilgilendirme", icon: BookOpen, permission: "bilgilendirme_goruntuleme" },
   { href: "/dashboard/veri-aktar", label: "Veri Aktar", icon: Upload, permission: "veri_aktar" },
   { href: "/dashboard/loglar", label: "İşlem Logları", icon: ScrollText, permission: "log_goruntuleme" },
@@ -60,10 +59,20 @@ export function SidebarNav({
   userName,
   userRole,
   permissions,
+  className,
+  onNavigate,
+  onClose,
+  onMenuToggle,
+  sidebarOpen = true,
 }: {
   userName?: string | null;
   userRole?: string;
   permissions: PermissionKey[];
+  className?: string;
+  onNavigate?: () => void;
+  onClose?: () => void;
+  onMenuToggle?: () => void;
+  sidebarOpen?: boolean;
 }) {
   const pathname = usePathname();
   const rolLabel =
@@ -79,15 +88,43 @@ export function SidebarNav({
   );
 
   return (
-    <aside className="flex w-64 flex-col bg-slate-900 text-slate-100">
-      <div className="flex items-center gap-3 border-b border-slate-700 px-6 py-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500">
-          <Zap className="h-6 w-6 text-white" />
+    <aside
+      className={cn(
+        "flex w-64 flex-col bg-slate-900 text-slate-100",
+        className
+      )}
+    >
+      <div className="flex items-center gap-2 border-b border-slate-700 px-4 py-5 sm:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-500">
+            <Zap className="h-6 w-6 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold">Akdeniz Dağıtım</p>
+            <p className="truncate text-xs text-slate-400">Kayıp Kaçak Tespit</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-bold">Akdeniz Dağıtım</p>
-          <p className="text-xs text-slate-400">Kayıp Kaçak Tespit</p>
-        </div>
+        {onMenuToggle && sidebarOpen && (
+          <button
+            type="button"
+            onClick={onMenuToggle}
+            aria-label="Menüyü kapat"
+            aria-expanded={sidebarOpen}
+            className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-600 bg-slate-800 text-slate-200 transition-colors hover:bg-slate-700 lg:flex"
+          >
+            <HamburgerIcon />
+          </button>
+        )}
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Menüyü kapat"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-4">
         {visibleNav.map((item) => {
@@ -99,6 +136,7 @@ export function SidebarNav({
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                 active
@@ -123,6 +161,7 @@ export function SidebarNav({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onNavigate}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                     active
@@ -141,6 +180,7 @@ export function SidebarNav({
       <div className="border-t border-slate-700 p-4">
         <Link
           href="/dashboard/profil"
+          onClick={onNavigate}
           className="mb-2 block truncate rounded-lg px-3 py-2 text-xs text-slate-400 hover:bg-slate-800 hover:text-white"
         >
           {userName && <span className="block font-medium">{userName}</span>}

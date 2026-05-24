@@ -16,7 +16,6 @@ import {
   ScrollText,
   HardHat,
   BellRing,
-  Radio,
 } from "lucide-react";
 import { ROL_LABELS, type UserRole } from "@/lib/auth/permissions";
 import { cn } from "@/lib/utils";
@@ -34,7 +33,6 @@ const nav = [
     icon: HardHat,
   },
   { href: "/dashboard/alarm-merkezi", label: "Alarm Merkezi", icon: BellRing },
-  { href: "/dashboard/bildirimler/canli", label: "Canlı Bildirimler", icon: Radio },
   { href: "/dashboard/bilgilendirme", label: "Bilgilendirme", icon: BookOpen },
   { href: "/dashboard/veri-aktar", label: "Veri Aktar", icon: Upload },
   { href: "/dashboard/loglar", label: "İşlem Logları", icon: ScrollText },
